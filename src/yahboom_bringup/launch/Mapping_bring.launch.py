@@ -1,5 +1,4 @@
 from launch import LaunchDescription
-#from launch.actions
 from launch_ros.actions import Node
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
@@ -9,49 +8,56 @@ import os
 
 
 def generate_launch_description():
+    """
+    Launch file for Cartographer SLAM mapping with real sensors.
 
-    # Declare use_sim_time argument for rosbag playback and add --clock --clock when play rosbag
-    # For using real sensors instead of rosbag, you need to set use_sim_time to false.
-    use_sim_time = LaunchConfiguration('use_sim_time', default='true')
+    Args:
+        use_sim_time (bool): Use simulation/rosbag clock if true, system clock if false.
+                            For real sensors: set to false (default)
+                            For rosbag playback: set to true and use --clock flag
+    """
 
+    # Declare launch arguments
     declare_use_sim_time_cmd = DeclareLaunchArgument(
         'use_sim_time',
-        default_value='true',
-        description='Use simulation (Gazebo/rosbag) clock if true'
+        default_value='false',
+        description='Use simulation (Gazebo/rosbag) clock if true, system clock if false'
     )
 
-    carto = IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(os.path.join(
-                get_package_share_directory("yahboom_bringup"),
-                "",
-                "Catographer.launch.py",
-            )),
-            launch_arguments={'use_sim_time': use_sim_time}.items(),
-        )
+    use_sim_time = LaunchConfiguration('use_sim_time')
 
+    # Include Cartographer launch file
+    carto = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(
+                get_package_share_directory("yahboom_bringup"),
+                "Catographer.launch.py"
+            )
+        ),
+        launch_arguments={'use_sim_time': use_sim_time}.items()
+    )
+
+    # LaserScan to PointCloud converter node
     laser_to_point_node = Node(
         package='laserscan_to_point_pulisher',
         executable='laserscan_to_point_pulisher',
-        output="screen",
+        output='screen',
         parameters=[{'use_sim_time': use_sim_time}]
     )
 
+    # Sensor synchronization and rewrite node
     sync_rewrite_sensors_node = Node(
         package='sync_rewrite_sensors',
         executable='sync_rewrite_sensors',
-        output="screen",
+        output='screen',
         parameters=[{'use_sim_time': use_sim_time}]
     )
 
-
-    # rf2o_laser_odometry = IncludeLaunchDescription(PythonLaunchDescriptionSource(
-    #    [os.path.join(get_package_share_directory('rf2o_laser_odometry'), 'launch'),'/rf2o_laser_odometry.launch.py'])
-    # )
-
+    # RViz2 visualization
     rviz_display_node = Node(
         package='rviz2',
-        executable="rviz2",
-        output="screen",
+        executable='rviz2',
+        output='screen',
         parameters=[{'use_sim_time': use_sim_time}]
     )
 
