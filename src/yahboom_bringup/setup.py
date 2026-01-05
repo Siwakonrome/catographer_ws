@@ -1,4 +1,6 @@
 from setuptools import setup
+import os
+from glob import glob
 
 package_name = 'yahboom_bringup'
 
@@ -11,7 +13,8 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         ('share/' + package_name, ['launch/Mapping_bring.launch.py' , 'launch/Catographer.launch.py','launch/occupancy_grid.launch.py']),
-        ('share/' + package_name + '/params', ['params/car_2d.lua'])
+        ('share/' + package_name + '/params', ['params/car_2d.lua']),
+        ('share/' + package_name + '/rvizs', glob('rvizs/*.rviz'))
     ],
     install_requires=['setuptools'],
     zip_safe=True,

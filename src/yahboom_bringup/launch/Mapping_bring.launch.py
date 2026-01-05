@@ -54,10 +54,17 @@ def generate_launch_description():
     )
 
     # RViz2 visualization
+    rviz_config_file = os.path.join(
+        get_package_share_directory('yahboom_bringup'),
+        'rvizs',
+        'mapping.rviz'
+    )
+
     rviz_display_node = Node(
         package='rviz2',
         executable='rviz2',
         output='screen',
+        arguments=['-d', rviz_config_file],
         parameters=[{'use_sim_time': use_sim_time}]
     )
 
