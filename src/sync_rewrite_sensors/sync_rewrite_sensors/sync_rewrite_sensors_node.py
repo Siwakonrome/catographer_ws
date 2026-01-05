@@ -147,7 +147,7 @@ class SyncRewriteSensorsNode(Node):
         # ---------- /clock ----------
         clock_msg = Clock()
         clock_msg.clock = stamp
-        self.clock_pub.publish(clock_msg)
+        # self.clock_pub.publish(clock_msg)
 
         # ---------- scan ----------
         scan = self.latest_scan
