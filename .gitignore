@@ -1,0 +1,50 @@
+# ROS2 workspace directories
+**/build/
+**/install/
+**/log/
+
+# Python artifacts
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+*.pyc
+
+# C++ artifacts
+*.o
+*.a
+*.so
+*.so.*
+*.dylib
+*.out
+*.app
+
+# IDE and editor files
+**/.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+*.code-workspace
+
+# ROS specific
+*.bag
+*.db3
+*.db3-shm
+*.db3-wal
+
+# Colcon/CMake artifacts
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+compile_commands.json
+CTestTestfile.cmake
+Makefile
+
+# Documentation
+doxygen_generated/
+doc/html/
+doc/latex/
