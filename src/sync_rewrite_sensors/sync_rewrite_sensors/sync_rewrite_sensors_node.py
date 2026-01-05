@@ -52,7 +52,6 @@ class SyncRewriteSensorsNode(Node):
         self.scan_pub = self.create_publisher(LaserScan,'/scan_sync',10)
         self.imu_pub = self.create_publisher(Imu,'/imu_sync',10)
         self.tf_static_pub = self.create_publisher(TFMessage, '/tf_static', qos_static)
-        self.clock_pub = self.create_publisher(Clock,'/clock',10)
 
         self.publish_static_tf()
 
@@ -144,10 +143,6 @@ class SyncRewriteSensorsNode(Node):
         now = self.get_clock().now()
         stamp = now.to_msg()
 
-        # ---------- /clock ----------
-        clock_msg = Clock()
-        clock_msg.clock = stamp
-        # self.clock_pub.publish(clock_msg)
 
         # ---------- scan ----------
         scan = self.latest_scan
