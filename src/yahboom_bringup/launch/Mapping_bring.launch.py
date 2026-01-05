@@ -10,7 +10,8 @@ import os
 
 def generate_launch_description():
 
-    # Declare use_sim_time argument for rosbag playback
+    # Declare use_sim_time argument for rosbag playback and add --clock --clock when play rosbag
+    # For using real sensors instead of rosbag, you need to set use_sim_time to false.
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
 
     declare_use_sim_time_cmd = DeclareLaunchArgument(
@@ -58,7 +59,6 @@ def generate_launch_description():
         [
             declare_use_sim_time_cmd,
             carto,
-            # rf2o_laser_odometry,
             laser_to_point_node,
             rviz_display_node,
             sync_rewrite_sensors_node,
