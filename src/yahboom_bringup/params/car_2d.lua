@@ -5,8 +5,8 @@ options = {
   map_builder = MAP_BUILDER,
   trajectory_builder = TRAJECTORY_BUILDER,
   map_frame = "map",
-  tracking_frame = "base_footprint",
-  published_frame = "base_footprint",
+  tracking_frame = "base_footprint_sync",
+  published_frame = "base_footprint_sync",
   odom_frame = "odom",
   -- true改为false，不用提供里程计数据
   provide_odom_frame = true,

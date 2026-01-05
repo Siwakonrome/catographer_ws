@@ -25,6 +25,14 @@ def generate_launch_description():
         executable='laserscan_to_point_pulisher',
         output="screen"
     )
+
+    sync_rewrite_sensors_node = Node(
+        package='sync_rewrite_sensors',
+        executable='sync_rewrite_sensors',
+        output="screen"
+    )
+
+
     #rf2o_laser_odometry = IncludeLaunchDescription(PythonLaunchDescriptionSource(
      #   [os.path.join(get_package_share_directory('rf2o_laser_odometry'), 'launch'),'/rf2o_laser_odometry.launch.py'])
     #)
@@ -41,5 +49,6 @@ def generate_launch_description():
             #rf2o_laser_odometry,
             laser_to_point_node,
             rviz_display_node,
+            sync_rewrite_sensors_node,
         ]
     )

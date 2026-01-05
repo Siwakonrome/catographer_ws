@@ -2,12 +2,12 @@
 
 import rclpy
 from rclpy.node import Node
-from sensor_msgs.msg import LaserScan, Imu, JointState
+from sensor_msgs.msg import LaserScan, Imu
 from tf2_msgs.msg import TFMessage
 from geometry_msgs.msg import TransformStamped
 from rosgraph_msgs.msg import Clock
 from rclpy.qos import QoSProfile, QoSDurabilityPolicy
-from nav_msgs.msg import Odometry
+
 
 
 
@@ -27,138 +27,39 @@ class SyncRewriteSensorsNode(Node):
             durability=QoSDurabilityPolicy.TRANSIENT_LOCAL
         )
 
-        # ===============================
-        # use_sim_time (IMPORTANT)
-        # ===============================
-        if not self.has_parameter('use_sim_time'):
-            self.declare_parameter('use_sim_time', False)
-
-        self.set_parameters([
-            rclpy.parameter.Parameter(
-                'use_sim_time',
-                rclpy.Parameter.Type.BOOL,
-                False
-            )
-        ])
-
-
+        
 
         # ===============================
         # Internal buffers (latest)
         # ===============================
-        self.latest_scan = None
-        self.latest_imu = None
-        self.latest_joint = None
-        self.latest_tf = None
-        self.latest_tf_static = None
-        self.latest_odom = None
+        self.latest_scan : LaserScan = None
+        self.latest_imu : Imu = None
+     
+       
+        
+        
 
         # ===============================
         # Subscribers (STORE ONLY)
         # ===============================
-        self.create_subscription(
-            LaserScan,
-            '/scan',
-            self.scan_cb,
-            10
-        )
-
-        self.create_subscription(
-            Imu,
-            '/imu/data_raw_self',
-            self.imu_cb,
-            10
-        )
-
-        self.create_subscription(
-            JointState,
-            '/joint_states',
-            self.joint_cb,
-            10
-        )
-
-        self.create_subscription(
-            TFMessage,
-            '/tf',
-            self.tf_cb,
-            10
-        )
-
-        self.create_subscription(
-            TFMessage,
-            '/tf_static',
-            self.tf_static_cb,
-            10
-        )
-
-
-        self.create_subscription(
-            Odometry,
-            '/odom_rf2o',
-            self.odom_cb,
-            10
-        )
-
+        self.create_subscription(LaserScan,'/scan',self.scan_cb,10)
+        self.create_subscription(Imu,'/imu/data_raw_self',self.imu_cb,10)
 
 
         # ===============================
         # Publishers (SYNC OUTPUT)
         # ===============================
-        self.scan_pub = self.create_publisher(
-            LaserScan,
-            '/scan_sync',
-            10
-        )
-
-        self.imu_pub = self.create_publisher(
-            Imu,
-            '/imu_sync',
-            10
-        )
-
-        self.joint_pub = self.create_publisher(
-            JointState,
-            '/joint_states_sync',
-            10
-        )
-
-        self.tf_pub = self.create_publisher(
-            TFMessage,
-            '/tf',
-            10
-        )
-
-
-        self.tf_static_pub = self.create_publisher(
-            TFMessage, 
-            '/tf_static', 
-            qos_static
-        )
-        
-
-        self.clock_pub = self.create_publisher(
-            Clock,
-            '/clock',
-            10
-        )
-
-        self.odom_pub = self.create_publisher(
-            Odometry,
-            '/odom',
-            10
-        )
-
+        self.scan_pub = self.create_publisher(LaserScan,'/scan_sync',10)
+        self.imu_pub = self.create_publisher(Imu,'/imu_sync',10)
+        self.tf_static_pub = self.create_publisher(TFMessage, '/tf_static', qos_static)
+        self.clock_pub = self.create_publisher(Clock,'/clock',10)
 
         self.publish_static_tf()
-
 
         # ===============================
         # Single Timer Loop (30 Hz)
         # ===============================
-        self.timer = self.create_timer(
-            1.0 / 30.0,
-            self.timer_cb
-        )
+        self.timer = self.create_timer(1.0 / 30.0,self.timer_cb)
 
         self.get_logger().info('✅ Sync rewrite TF + TF_STATIC node started')
 
@@ -170,37 +71,6 @@ class SyncRewriteSensorsNode(Node):
 
     def imu_cb(self, msg):
         self.latest_imu = msg
-
-    def joint_cb(self, msg):
-        self.latest_joint = msg
-
-    def tf_cb(self, msg):
-        self.latest_tf = msg
-
-    def tf_static_cb(self, msg):
-        self.latest_tf_static = msg
-
-    def odom_cb(self, msg):
-        self.latest_odom = msg
-
-
-    
-
-    
-    
-
-    def publish_tf(self, stamp):
-        if self.latest_odom is not None:
-            odom = self.latest_odom
-            t = TransformStamped()
-            t.header.stamp = stamp
-            t.header.frame_id = odom.header.frame_id
-            t.child_frame_id = odom.child_frame_id
-            t.transform.translation.x = odom.pose.pose.position.x
-            t.transform.translation.y = odom.pose.pose.position.y
-            t.transform.translation.z = odom.pose.pose.position.z
-            t.transform.rotation = odom.pose.pose.orientation
-            self.tf_pub.publish(TFMessage(transforms=[t]))
     
 
     def publish_static_tf(self):
@@ -288,18 +158,12 @@ class SyncRewriteSensorsNode(Node):
         # ---------- imu ----------
         imu = self.latest_imu
         imu.header.stamp = stamp
-        imu.header.frame_id = "imu_link_sync"
+        imu.header.frame_id = "imu_sync"
         self.imu_pub.publish(imu)
 
 
 
-        if self.latest_odom is not None:
-            # ---------- odom ----------
-            odom = self.latest_odom
-            odom.header.stamp = stamp
-            self.odom_pub.publish(odom)
-            self.publish_tf(stamp=stamp)
-            self.get_logger().info('....23>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Sync rewrite TF + TF_STATIC node started')
+        
 
         
         

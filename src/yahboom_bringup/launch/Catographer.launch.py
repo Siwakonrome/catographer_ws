@@ -12,7 +12,7 @@ from launch.substitutions import ThisLaunchFileDir
  
  
 def generate_launch_description():
-    use_sim_time = LaunchConfiguration('use_sim_time', default='true')
+    use_sim_time = LaunchConfiguration('use_sim_time', default='false')
     cartographer_prefix = get_package_share_directory('yahboom_bringup')
     cartographer_config_dir = LaunchConfiguration('cartographer_config_dir', default=os.path.join(cartographer_prefix, 'params'))
     configuration_basename = LaunchConfiguration('configuration_basename',
@@ -43,7 +43,9 @@ def generate_launch_description():
             parameters=[{'use_sim_time': use_sim_time}],
             arguments=['-configuration_directory', cartographer_config_dir,
                        '-configuration_basename', configuration_basename],
-                       
+            remappings=[
+                    ('scan', '/scan_sync'),
+                ],
             ),
             
  
