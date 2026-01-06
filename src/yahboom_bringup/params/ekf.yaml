@@ -52,7 +52,7 @@ ekf_filter_node:
     # =========================
     # Output
     # =========================
-    odometry_topic: /odom_sync
+    odometry_topic: /odom
 
 
 
