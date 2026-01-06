@@ -21,12 +21,8 @@ class SyncRewriteNode(Node):
         # ===============================
         qos_static = QoSProfile(depth=1, durability=QoSDurabilityPolicy.TRANSIENT_LOCAL)
 
-        # ===============================
-        # Internal buffers (latest)
-        # ===============================
-        self.latest_scan = None
-        self.latest_imu = None
-        self.latest_joint = None
+       
+        
 
         # ===============================
         # Subscribers (STORE ONLY)
@@ -48,10 +44,6 @@ class SyncRewriteNode(Node):
         # ===============================
         self.publish_static_tf()
 
-        # ===============================
-        # Single Timer Loop (30 Hz)
-        # ===============================
-        self.timer = self.create_timer(1.0 / 30.0, self.timer_cb)
         self.get_logger().info('Sync rewrite TF + TF_STATIC node started')
 
 
@@ -60,9 +52,28 @@ class SyncRewriteNode(Node):
     # ==================================================
     # CALLBACKS (STORE ONLY)
     # ==================================================
-    def scan_cb(self, msg): self.latest_scan = msg
-    def imu_cb(self, msg): self.latest_imu = msg
-    def joint_cb(self, msg): self.latest_joint = msg
+    def scan_cb(self, msg : LaserScan):
+        # ------------------------------ scan ------------------------------ #
+        scan = msg
+        scan.header.stamp = self.get_clock().now().to_msg()
+        scan.header.frame_id = "laser_frame_sync"
+        self.scan_pub.publish(scan)
+        # ------------------------------ scan ------------------------------ #
+
+
+
+    def imu_cb(self, msg : Imu):
+        # ------------------------------ imu ------------------------------ #
+        imu = msg
+        imu.header.stamp = self.get_clock().now().to_msg()
+        imu.header.frame_id = "imu_frame_sync"
+        self.imu_pub.publish(imu)
+        # ------------------------------ imu ------------------------------ #
+
+
+
+    def joint_cb(self, msg : JointState):
+        pass
 
     
 
@@ -121,42 +132,7 @@ class SyncRewriteNode(Node):
         # --------------------------------------------------
         # Publish once (static)
         # --------------------------------------------------
-        self.tf_static_pub.publish(TFMessage(transforms=tf_list))
-
-
-
-    # ==================================================
-    # SINGLE TIMER LOOP
-    # ==================================================
-    def timer_cb(self):
-
-        if (self.latest_scan   is None or
-            self.latest_imu    is None or
-            self.latest_joint  is None 
-        ): 
-            return
-        
-
-        stamp = self.get_clock().now().to_msg()
-
-        # ------------------------------ scan ------------------------------ #
-        scan : LaserScan = self.latest_scan
-        scan.header.stamp = stamp
-        scan.header.frame_id = "laser_frame_sync"
-        self.scan_pub.publish(scan)
-        # ------------------------------ scan ------------------------------ #
-
-
-        # ------------------------------ imu ------------------------------ #
-        imu : Imu = self.latest_imu
-        imu.header.stamp = stamp
-        imu.header.frame_id = "imu_frame_sync"
-        self.imu_pub.publish(imu)
-        # ------------------------------ imu ------------------------------ #
-
-
-
-        
+        self.tf_static_pub.publish(TFMessage(transforms=tf_list))        
 
         
         
