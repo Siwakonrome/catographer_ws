@@ -40,7 +40,7 @@ def generate_launch_description():
 
 
                 # ===== Database path (ROS parameter) =====
-                'database_path': '/home/fibo/ws/MAP/rtabmap.db',
+                'database_path': '/home/fibo/catographer_ws/maps/rtabmap.db',
         
 
                 # ===== Mapping mode =====
@@ -81,7 +81,7 @@ def generate_launch_description():
 
 
                 # ===== Use existing DB =====
-                'database_path': '/home/fibo/ws/MAP/rtabmap.db',
+                'database_path': '/home/fibo/catographer_ws/maps/rtabmap.db',
 
                 # ===== Localization-only =====
                 'Mem/IncrementalMemory': 'false',     # ❌ ไม่สร้าง node ใหม่
