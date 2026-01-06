@@ -15,6 +15,15 @@
 * Modifications: Jeremie Deray & (see contributons on github)
 ******************************************************************************************** */
 
+
+// odom.pose.pose.position.x = rf2o_ref.robot_pose_.translation()(0);
+//   odom.pose.pose.position.y = rf2o_ref.robot_pose_.translation()(1);
+// To
+// odom.pose.pose.position.x = -rf2o_ref.robot_pose_.translation()(0);
+//   odom.pose.pose.position.y = -rf2o_ref.robot_pose_.translation()(1);
+
+
+
 #include "rf2o_laser_odometry/CLaserOdometry2DNode.hpp"
 
 using namespace rf2o;
@@ -33,7 +42,7 @@ CLaserOdometry2DNode::CLaserOdometry2DNode(): Node("CLaserOdometry2DNode")
   this->get_parameter("base_frame_id", base_frame_id);
   this->declare_parameter<std::string>("odom_frame_id", "odom");
   this->get_parameter("odom_frame_id", odom_frame_id);
-  this->declare_parameter<bool>("publish_tf", true);
+  this->declare_parameter<bool>("publish_tf", false);
   this->get_parameter("publish_tf", publish_tf);
   this->declare_parameter<std::string>("init_pose_from_topic", "/base_pose_ground_truth");
   this->get_parameter("init_pose_from_topic", init_pose_from_topic);
@@ -214,8 +223,8 @@ void CLaserOdometry2DNode::publish()
   odom.header.stamp = rf2o_ref.last_odom_time;    // the time of the last scan used!
   odom.header.frame_id = odom_frame_id;
   //set the position
-  odom.pose.pose.position.x = rf2o_ref.robot_pose_.translation()(0);
-  odom.pose.pose.position.y = rf2o_ref.robot_pose_.translation()(1);
+  odom.pose.pose.position.x = -rf2o_ref.robot_pose_.translation()(0);
+  odom.pose.pose.position.y = -rf2o_ref.robot_pose_.translation()(1);
   odom.pose.pose.position.z = 0.0;
   odom.pose.pose.orientation = quaternion;
   //set the velocity
@@ -234,8 +243,8 @@ void CLaserOdometry2DNode::publish()
     odom_trans.header.stamp = rf2o_ref.last_odom_time;    // the time of the last scan used!
     odom_trans.header.frame_id = odom_frame_id;
     odom_trans.child_frame_id = base_frame_id;
-    odom_trans.transform.translation.x = rf2o_ref.robot_pose_.translation()(0);
-    odom_trans.transform.translation.y = rf2o_ref.robot_pose_.translation()(1);
+    odom_trans.transform.translation.x = -rf2o_ref.robot_pose_.translation()(0);
+    odom_trans.transform.translation.y = -rf2o_ref.robot_pose_.translation()(1);
     odom_trans.transform.translation.z = 0.0;
     odom_trans.transform.rotation = quaternion;
     //send the transform
