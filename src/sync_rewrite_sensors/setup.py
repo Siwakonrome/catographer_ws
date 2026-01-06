@@ -20,7 +20,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-        "sync_rewrite_sensors = sync_rewrite_sensors.sync_rewrite_sensors_node:main"
+        "sync_rewrite_sensors = sync_rewrite_sensors.sync_rewrite_sensors_node:main",
+        'sync_rewrite_sensors_and_tf = sync_rewrite_sensors.sync_rewrite_sensors_and_tf_node:main',
         ],
     },
 )

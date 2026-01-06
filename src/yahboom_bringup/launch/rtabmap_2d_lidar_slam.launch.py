@@ -143,8 +143,8 @@ def generate_launch_description():
         # ===============================
         Node(
             package='sync_rewrite_sensors',
-            executable='sync_rewrite_sensors',
-            name='sync_rewrite_sensors_node',
+            executable='sync_rewrite_sensors_and_tf',
+            name='sync_rewrite_sensors_and_tf_node',
             output='screen',
             parameters=[
                 {'use_sim_time': LaunchConfiguration('use_sim_time')}
