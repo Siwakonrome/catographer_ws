@@ -34,7 +34,7 @@ public:
         // Publishers (SYNC OUTPUT)
         // ===============================
         scan_pub_ = this->create_publisher<sensor_msgs::msg::LaserScan>("/scan_sync", 10);
-        imu_pub_ = this->create_publisher<sensor_msgs::msg::Imu>("/imu_sync", 10);
+        imu_pub_ = this->create_publisher<sensor_msgs::msg::Imu>("/imu_raw_sync", 10);
         joint_pub_ = this->create_publisher<sensor_msgs::msg::JointState>("/joint_states_sync", 10);
         tf_static_pub_ = this->create_publisher<tf2_msgs::msg::TFMessage>("/tf_static", qos_static);
 
@@ -120,7 +120,7 @@ private:
         geometry_msgs::msg::TransformStamped tf3;
         tf3.header.stamp = now;
         tf3.header.frame_id = "base_link_sync";
-        tf3.child_frame_id = "imu_link_sync";
+        tf3.child_frame_id = "imu_frame_sync";
         tf3.transform.translation.x = 0.085;
         tf3.transform.translation.y = 4.4164e-05;
         tf3.transform.translation.z = 0.07;
