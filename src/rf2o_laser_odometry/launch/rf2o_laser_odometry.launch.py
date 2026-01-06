@@ -20,14 +20,14 @@ def generate_launch_description():
             name='rf2o_laser_odometry',
             output='screen',
             parameters=[{
-                'laser_scan_topic' : '/scan_sync',
-                'odom_topic' : '/odom_rf2o',
-                'publish_tf' : False,
-                'base_frame_id' : 'base_footprint_sync',
-                'odom_frame_id' : 'odom_sync',
+                'laser_scan_topic' : '/scan_sync',       # TOPIC (Scan)
+                'odom_topic' : '/odom_rf2o',             # TOPIC (Odom)
+                'publish_tf' : True,
+                'base_frame_id' : 'base_footprint_sync', # FRAME (Base footprint)
+                'odom_frame_id' : 'odom_sync',           # FRAME (Odom)
                 'init_pose_from_topic' : '',
                 'freq' : 10.0,
-                'use_sim_time': LaunchConfiguration('use_sim_time'),  # CRITICAL FIX!
+                'use_sim_time': LaunchConfiguration('use_sim_time'),
             }],
         ),
     ])
