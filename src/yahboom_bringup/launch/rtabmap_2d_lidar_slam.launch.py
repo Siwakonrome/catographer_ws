@@ -142,9 +142,9 @@ def generate_launch_description():
         # Sync & Rewrite all topics
         # ===============================
         Node(
-            package='tb3_nav',
-            executable='sync_rewrite_tf_tfstatic_node',
-            name='sync_rewrite_node',
+            package='sync_rewrite_sensors',
+            executable='sync_rewrite_sensors',
+            name='sync_rewrite_sensors_node',
             output='screen',
             parameters=[
                 {'use_sim_time': LaunchConfiguration('use_sim_time')}
