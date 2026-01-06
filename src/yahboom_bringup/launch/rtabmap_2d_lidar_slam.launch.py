@@ -167,6 +167,24 @@ def generate_launch_description():
         ),
 
 
+
+        # EKF from imu + scan odom
+        Node(
+            package='robot_localization',
+            executable='ekf_node',
+            name='ekf_filter_node',
+            output='screen',
+            parameters=[
+                os.path.join(
+                    get_package_share_directory('yahboom_bringup'),
+                    'params',
+                    'ekf.yaml'
+                ),
+                {'use_sim_time': LaunchConfiguration('use_sim_time')}
+            ],
+        ),
+
+
         # RTAB-Map SLAM node with 2D LaserScan
         Node(
             package='rtabmap_slam',

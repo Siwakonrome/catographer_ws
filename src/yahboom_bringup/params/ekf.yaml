@@ -49,14 +49,21 @@ ekf_filter_node:
     imu0_queue_size: 10
     imu0_remove_gravitational_acceleration: true
 
-    # =========================
-    # Output
-    # =========================
-    odometry_topic: /odom
+    
 
 
 
 
-# /odom
+# /odometry/filtered
 #    ----> TF
 #           -------> (odom_sync  ─────▶  base_footprint_sync)
+
+
+# ros2 topic info /odometry/filtered -v
+# Type: nav_msgs/msg/Odometry
+
+# Publisher count: 1
+
+# Node name: ekf_filter_node
+# Node namespace: /
+# Topic type: nav_msgs/msg/Odometry
