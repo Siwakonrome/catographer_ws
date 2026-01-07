@@ -222,3 +222,18 @@ def generate_launch_description():
         ),
     ])
 
+
+
+# ros2 run rtabmap_odom icp_odometry --ros-args -p frame_id:=base_link
+#  # List all parameters
+#  2001  ros2 param list /icp_odometry
+#  2002  # Describe a specific parameter (replace param_name with actual parameter)
+#  2003  ros2 param describe /icp_odometry frame_id
+#  2004  clear
+#  2005  # Check if --params works in ROS2
+#  2006  ros2 run rtabmap_odom icp_odometry --params
+#  2007  clear
+#  2008  # Check node interface
+#  2009  ros2 run rtabmap_odom icp_odometry --ros-args --help
+#  2010  history 
+# fibo@fibo-ASUS-TUF-Gaming-A15-FA507UV-FA507UV:~$ 
