@@ -4,6 +4,10 @@
 #include <sensor_msgs/msg/joint_state.hpp>
 #include <tf2_msgs/msg/tf_message.hpp>
 #include <geometry_msgs/msg/transform_stamped.hpp>
+#include <tf2_ros/static_transform_broadcaster.h>
+
+
+
 
 class SyncRewriteNode : public rclcpp::Node
 {
@@ -13,7 +17,7 @@ public:
         // ===============================
         // ROS pubs Qos static
         // ===============================
-        auto qos_static = rclcpp::QoS(1).transient_local();
+        // auto qos_static = rclcpp::QoS(1).transient_local();
 
         // ===============================
         // Subscribers (STORE ONLY)
@@ -36,7 +40,8 @@ public:
         scan_pub_ = this->create_publisher<sensor_msgs::msg::LaserScan>("/scan_sync", 10);
         imu_pub_ = this->create_publisher<sensor_msgs::msg::Imu>("/imu_raw_sync", 10);
         joint_pub_ = this->create_publisher<sensor_msgs::msg::JointState>("/joint_states_sync", 10);
-        tf_static_pub_ = this->create_publisher<tf2_msgs::msg::TFMessage>("/tf_static", qos_static);
+        static_broadcaster_ = std::make_shared<tf2_ros::StaticTransformBroadcaster>(this);
+        // tf_static_pub_ = this->create_publisher<tf2_msgs::msg::TFMessage>("/tf_static", qos_static);
 
         // ===============================
         // Publishers STATIC TF
@@ -79,7 +84,8 @@ private:
 
     void publish_static_tf()
     {
-        tf2_msgs::msg::TFMessage tf_message;
+        // tf2_msgs::msg::TFMessage tf_message;
+        std::vector<geometry_msgs::msg::TransformStamped> tfs;
         auto now = this->get_clock()->now();
 
         // --------------------------------------------------
@@ -96,7 +102,7 @@ private:
         tf1.transform.rotation.y = 0.0;
         tf1.transform.rotation.z = 0.0;
         tf1.transform.rotation.w = 1.0;
-        tf_message.transforms.push_back(tf1);
+        tfs.push_back(tf1);
 
         // --------------------------------------------------
         // base_link -> laser_frame
@@ -112,7 +118,7 @@ private:
         tf2.transform.rotation.y = 0.0;
         tf2.transform.rotation.z = 0.0;
         tf2.transform.rotation.w = 1.0;
-        tf_message.transforms.push_back(tf2);
+        tfs.push_back(tf2);
 
         // --------------------------------------------------
         // base_link -> imu_link
@@ -128,12 +134,13 @@ private:
         tf3.transform.rotation.y = 0.0;
         tf3.transform.rotation.z = 0.0;
         tf3.transform.rotation.w = 1.0;
-        tf_message.transforms.push_back(tf3);
+        tfs.push_back(tf3);
 
         // --------------------------------------------------
         // Publish once (static)
         // --------------------------------------------------
-        tf_static_pub_->publish(tf_message);
+        static_broadcaster_->sendTransform(tfs);
+        // tf_static_pub_->publish(tf_message);
     }
 
     // Subscribers
@@ -145,7 +152,8 @@ private:
     rclcpp::Publisher<sensor_msgs::msg::LaserScan>::SharedPtr scan_pub_;
     rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr imu_pub_;
     rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr joint_pub_;
-    rclcpp::Publisher<tf2_msgs::msg::TFMessage>::SharedPtr tf_static_pub_;
+    std::shared_ptr<tf2_ros::StaticTransformBroadcaster> static_broadcaster_;
+    // rclcpp::Publisher<tf2_msgs::msg::TFMessage>::SharedPtr tf_static_pub_;
 };
 
 int main(int argc, char** argv)

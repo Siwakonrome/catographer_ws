@@ -11,6 +11,7 @@ find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(tf2_msgs REQUIRED)
+find_package(tf2_ros REQUIRED)
 
 # Add executable
 add_executable(sync_rewrite_sensors_and_tf src/sync_rewrite_sensors_and_tf_node.cpp)
@@ -21,6 +22,7 @@ ament_target_dependencies(sync_rewrite_sensors_and_tf
   sensor_msgs
   geometry_msgs
   tf2_msgs
+  tf2_ros
 )
 
 # Install C++ executable
